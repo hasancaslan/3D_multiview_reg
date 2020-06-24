@@ -1,10 +1,9 @@
 
-from lib import pairwise, multiview
+from lib import pairwise
 import torch
 
 method_dict = {
     'pairwise': pairwise,
-    'multiview': multiview,
 }
 
 
@@ -14,17 +13,19 @@ def get_model(cfg):
 
     Args:
         cfg (dict): config dictionary
-    
+
     Returns:
         model (nn.Module): torch model initialized with the input params
     '''
 
     method = cfg['method']['task']
-    device = torch.device('cuda' if (torch.cuda.is_available() and cfg['misc']['use_gpu']) else 'cpu') 
+    device = torch.device('cuda' if (
+        torch.cuda.is_available() and cfg['misc']['use_gpu']) else 'cpu')
 
     model = method_dict[method].config.get_model(cfg, device=device)
 
     return model
+
 
 def get_trainer(cfg, model, optimizer, logger):
     ''' 
@@ -39,10 +40,12 @@ def get_trainer(cfg, model, optimizer, logger):
     Returns:
         trainer (trainer instance): trainer instance used to train the network
     '''
-    
-    method = cfg['method']['task']
-    device = torch.device('cuda' if (torch.cuda.is_available() and cfg['misc']['use_gpu']) else 'cpu') 
 
-    trainer = method_dict[method].config.get_trainer(cfg, model, optimizer, logger, device)
+    method = cfg['method']['task']
+    device = torch.device('cuda' if (
+        torch.cuda.is_available() and cfg['misc']['use_gpu']) else 'cpu')
+
+    trainer = method_dict[method].config.get_trainer(
+        cfg, model, optimizer, logger, device)
 
     return trainer
